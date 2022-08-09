@@ -15,13 +15,11 @@
   "author": "smartwe",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^16.0.5",
-    "electron-builder": "^22.14.5"
+    "electron": "^16.2.8",
+    "electron-builder": "^22.14.13"
   },
   "dependencies": {
-    "electron-chrome-extension": "^5.0.0",
-    "electron-chrome-extensions": "^3.9.0",
-    "electron-updater": "^4.6.1",
+    "electron-updater": "^4.6.5",
     "spectron": "^15.0.0"
   },
   "repository": {
