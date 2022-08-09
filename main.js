@@ -2,7 +2,6 @@ const {app, ipcMain, dialog, Notification, Tray, session, Menu, webContents,} = 
 const path = require('path')
 const {BrowserWindow} = require('electron')
 const {autoUpdater} = require("electron-updater")
-const { ElectronChromeExtensions } = require('electron-chrome-extensions')
 
 
 
@@ -21,7 +20,6 @@ function createWindow () {
   })
   const extensions = new ElectronChromeExtensions()
   extensions.addTab(win1.webContents, win1)
-  win1.webContents.session.loadExtension(`${__dirname}/ext/boj-extended`)
   
   
   win1.loadURL('https://www.acmicpc.net/')
