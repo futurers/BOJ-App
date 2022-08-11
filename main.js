@@ -1,6 +1,5 @@
 const {app, ipcMain, dialog, Notification, Tray, session, Menu, webContents} = require('electron')
 const path = require('path')
-const {BrowserWindow} = require('electron')
 const {autoUpdater} = require("electron-updater")
 
 
