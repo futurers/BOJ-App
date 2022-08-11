@@ -1,3 +1,5 @@
+function adblock()
+{
     while(document.getElementsByClassName('adsbygoogle')[0] != null)
     {
         element = document.getElementsByClassName('adsbygoogle')
@@ -7,3 +9,4 @@
             element[i].remove();
         }
     }
+}
