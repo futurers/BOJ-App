@@ -1,4 +1,4 @@
-const {app, ipcMain, dialog, Notification, Tray, session, Menu, webContents,} = require('electron')
+const {app, ipcMain, dialog, Notification, Tray, session, Menu, webContents} = require('electron')
 const path = require('path')
 const {BrowserWindow} = require('electron')
 const {autoUpdater} = require("electron-updater")
@@ -15,16 +15,13 @@ function createWindow () {
       nodeIntegration: false,
       nativeWindowOpen: true,
       enableRemoteModule: false,
-      sandbox: false
+      sandbox: false,
+      preload: path.join(__dirname, 'js/preload.js'),
     }
   })
-  const extensions = new ElectronChromeExtensions()
-  extensions.addTab(win1.webContents, win1)
-  
+ win1.webContents.session.loadExtension(`${__dirname}/ext/boj-extended`)
   
   win1.loadURL('https://www.acmicpc.net/')
-  
-  
   
 }
 

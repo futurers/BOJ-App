@@ -4,13 +4,18 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "build:all": "electron-builder -mwl",
+    "build:all": "electron-builder -mwl --universal",
     "build:win": "electron-builder build --win -p never",
     "build:mac": "electron-builder build --mac -p never",
     "build:linux": "electron-builder build --linux -p never",
     "build": "electron-builder build -p never",
     "start": "electron .",
     "dist": "electron-builder --x64"
+  },
+  "build": {
+    "electronDownload": {
+      "mirror": "https://github.com/castlabs/electron-releases/releases/download/v"
+    }
   },
   "author": "smartwe",
   "license": "MIT",
