@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "electron-updater": "^4.6.5",
+    "got": "^12.3.1",
     "spectron": "^15.0.0"
   },
   "repository": {
