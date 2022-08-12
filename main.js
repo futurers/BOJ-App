@@ -1,11 +1,12 @@
 const {app, ipcMain, dialog, Notification, Tray, session, Menu, webContents} = require('electron')
 const path = require('path')
 const {BrowserWindow} = require('electron')
+const { ElectronChromeExtensions } = require('electron-chrome-extensions')
 
 
 
 function createWindow () {  
-  let win1 = new BrowserWindow({
+  let win = new BrowserWindow({
     width: 900,
     height: 700,
     webPreferences: {
@@ -18,9 +19,12 @@ function createWindow () {
       preload: path.join(__dirname, 'js/preload.js'),
     }
   })
-  win1.webContents.session.loadExtension(`${__dirname}/ext/boj-extended`)
-  
-  win1.loadURL('https://www.acmicpc.net/')
+  const extensions = new ElectronChromeExtensions()
+  extensions.addTab(win.webContents, win)
+  win.setMenu(null);
+  win.webContents.session.loadExtension(`${__dirname}/BOJ-Extended`)
+  win.webContents.openDevTools()
+  win.loadURL('https://www.acmicpc.net/')
   
 }
 
@@ -34,8 +38,6 @@ app.on('window-all-closed', () => {
 })
 
 app.on('activate', () => {
-  if (win === null) {
-    createWindow()
-  }
+  createWindow()
 })
 
