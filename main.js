@@ -18,7 +18,7 @@ function createWindow () {
       preload: path.join(__dirname, 'js/preload.js'),
     }
   })
- win1.webContents.session.loadExtension(`${__dirname}/ext/boj-extended`)
+  win1.webContents.session.loadExtension(`${__dirname}/ext/boj-extended`)
   
   win1.loadURL('https://www.acmicpc.net/')
   
