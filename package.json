@@ -33,11 +33,7 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
-    },
-    "files": [
-      "dist/**/*",
-      "package.json"
-    ]
+    }
   },
   "author": "smartwe",
   "license": "MIT",
