@@ -1,0 +1,26 @@
+appId: kr.smartwe.BojAdvanced
+copyright: smartwe
+productName: BojAdvanced
+artifactName: ${productName}-${version}-${os}.${ext}
+
+asar: true
+
+directories:
+  output: dist/
+
+files:
+  - package.json
+  - build/
+  - node_modules/
+
+mac:
+  target: dmg
+  category: public.app-category.utilities
+  darkModeSupport: true
+
+win:
+  target: nsis
+
+linux:
+  target: deb
+  asar: false
