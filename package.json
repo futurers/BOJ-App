@@ -1,5 +1,6 @@
 {
-  "name": "BojAdvanced",
+  "name": "bojadvanced",
+  "productName": "BojAdvanced",
   "version": "1.0.0",
   "description": "App what helps PS of BOJ",
   "main": "main.js",
