@@ -21,7 +21,7 @@
   "author": "smartwe",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^16.2.8",
+    "electron": "^20.0.2",
     "electron-builder": "^22.14.13"
   },
   "dependencies": {
