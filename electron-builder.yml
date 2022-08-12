@@ -23,4 +23,4 @@ win:
 
 linux:
   target: deb
-  asar: false
+  asar: true
