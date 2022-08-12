@@ -3,7 +3,7 @@
   "productName": "BojAdvanced",
   "version": "1.0.0",
   "description": "App what helps PS of BOJ",
-  "main": "main.js",
+  "main": "./main.js",
   "scripts": {
     "build:all": "electron-builder -mwl --universal",
     "build:win": "electron-builder build --win -p never --universal",
@@ -12,6 +12,32 @@
     "build": "electron-builder build -p never --universal",
     "start": "electron .",
     "dist": "electron-builder --x64"
+  },
+  "build": {
+    "productName": "BojAdvanced",
+    "asar": true,
+    "mac": {
+      "target": [
+        "default"
+      ],
+      "icon": "./icons/icon.icns"
+    },
+    "dmg": {
+      "title": "Electron",
+      "icon": "./icons/icon.icns"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "./icons/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ]
   },
   "author": "smartwe",
   "license": "MIT",
