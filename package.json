@@ -13,11 +13,6 @@
     "start": "electron .",
     "dist": "electron-builder --x64"
   },
-  "build": {
-    "electronDownload": {
-      "mirror": "https://github.com/castlabs/electron-releases/releases/download/v"
-    }
-  },
   "author": "smartwe",
   "license": "MIT",
   "devDependencies": {
