@@ -12,7 +12,7 @@
     "build": "electron-builder build -p never --universal",
     "start": "electron .",
     "dist": "electron-builder --x64",
-    "dist:port": "electron-builder --x64 portable"
+    "dist:port": "electron-builder --win portable --x64 "
   },
   "author": "smartwe",
   "license": "MIT",
