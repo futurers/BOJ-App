@@ -29,7 +29,12 @@ jobs:
           npm install
       - name: electron build
         run: |
-          npm run dist
+          if [ "$RUNNER_OS" == "Windows" ]; then
+              electron build --x64 portable
+              npm run dist
+          else
+            npm run dist
+          fi
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')

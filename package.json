@@ -13,25 +13,6 @@
     "start": "electron .",
     "dist": "electron-builder --x64"
   },
-  "build": {
-    "productName": "BojAdvanced",
-    "asar": true,
-    "mac": {
-      "target": [
-        "default"
-      ]
-    },
-    "dmg": {
-      "title": "Electron"
-    },
-    "win": {
-      "target": "nsis"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    }
-  },
   "author": "smartwe",
   "license": "MIT",
   "devDependencies": {
