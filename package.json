@@ -19,16 +19,13 @@
     "mac": {
       "target": [
         "default"
-      ],
-      "icon": "./icons/icon.icns"
+      ]
     },
     "dmg": {
-      "title": "Electron",
-      "icon": "./icons/icon.icns"
+      "title": "Electron"
     },
     "win": {
-      "target": "nsis",
-      "icon": "./icons/icon.ico"
+      "target": "nsis"
     },
     "nsis": {
       "oneClick": false,

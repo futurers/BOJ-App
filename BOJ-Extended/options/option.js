@@ -1,1 +1,199 @@
-(function a(){function b(a){const b=RegExp(/<([a-z]+)>/),c=RegExp(/<\/[a-z]+>/g);for(;b.test(a);)a=a.replace(b,"<span class=\"result-$1\">");return a=a.replace(c,"</span>"),a}function c(a){const c=a.target.getAttribute("name"),d=a.target.value,e=b(d||a.target.getAttribute("placeholder")),f=a.target.getAttribute("data-preview");document.getElementById(f).innerHTML=e,Config.save(c,b(d)),Config.save(c+"-code",d)}if(chrome.runtime.lastError)return console.error(chrome.runtime.lastError.message),void setTimeout(a,100);Array.from(document.getElementsByClassName("btn-close-window")).forEach(function(a){a.addEventListener("click",function(a){a.preventDefault(),window.close("","_parent","")})});const d=document.getElementsByClassName("option-theme");for(let a=0;a<d.length;++a)d[a].addEventListener("change",function(a){Config.save("theme",a.target.value,function(a){applyTheme(null,a)})});Config.load("theme",function(a){d["light"==a?0:1].checked=!0,applyTheme(null,a)});const e=document.getElementsByClassName("option-wide");for(let a=0;a<e.length;++a)e[a].addEventListener("change",function(a){Config.save("wide",!!parseInt(a.target.value),function(a){applyWide(null,a)})});Config.load("wide",function(a){e[a?1:0].checked=!0,applyWide(null,a)});const f=document.getElementsByClassName("option-status-pid");for(let a=0;a<f.length;++a)f[a].addEventListener("change",function(a){Config.save("show-status-pid",!!parseInt(a.target.value))});Config.load("show-status-pid",function(a){f[a?0:1].checked=!0});const g=document.getElementsByClassName("option-status-history");for(let a=0;a<g.length;++a)g[a].addEventListener("change",function(a){Config.save(Constants.CONFIG_SHOW_STATUS_HISTORY,!!parseInt(a.target.value))});Config.load(Constants.CONFIG_SHOW_STATUS_HISTORY,function(a){g[!1===a?1:0].checked=!0});const h=document.getElementsByClassName("option-group-link");for(let a=0;a<h.length;++a)h[a].addEventListener("change",function(a){Config.save(Constants.CONFIG_SHOW_GROUP_LINK,!!parseInt(a.target.value))});Config.load(Constants.CONFIG_SHOW_GROUP_LINK,function(a){h[a?1:0].checked=!0});const j=document.getElementsByClassName("msg-code");for(let a=0;a<j.length;++a)Config.load(j[a].getAttribute("name")+"-code",function(c){c&&(j[a].value=c,document.getElementById(j[a].getAttribute("data-preview")).innerHTML=b(c))}),j[a].addEventListener("input",c);const k=document.getElementsByClassName("option-status-result");for(let a=0;a<k.length;++a)k[a].addEventListener("change",function(a){Config.save(Constants.CONFIG_SHOW_FAKE_RESULT,!!parseInt(a.target.value))});Config.load(Constants.CONFIG_SHOW_FAKE_RESULT,function(a){k[!1===a?1:0].checked=!0});{const a=document.getElementById("reformat-practice");c({target:a});const d=document.getElementById("reformat-tag-table"),e=d.querySelector("tbody"),f=["ac","green","acc","accept","wa","red","wrong","fail","pac","yellow","partial","ce","blue","rte","re","purple","runtime","ple","tle","ole","time","wait","gray","grey","compile","judging","del","b","strong","i","u","strike"];for(const a of f){const c=document.createElement("tr"),d=b(`<${a}>${"\uC801\uC6A9\uB41C \uACB0\uACFC \uBBF8\uB9AC\uBCF4\uAE30"}</${a}>`);c.innerHTML=`<td><code>&lt;${a}&gt;</td><td class="result-fake-text">${d}</td>`,e.appendChild(c)}}})();
+(function main() {
+  if (chrome.runtime.lastError) {
+    console.error(chrome.runtime.lastError.message);
+    setTimeout(main, 100);
+    return;
+  }
+  Array.from(document.getElementsByClassName('btn-close-window')).forEach(
+    (e) => {
+      e.addEventListener('click', (evt) => {
+        evt.preventDefault();
+        window.close('', '_parent', '');
+      });
+    }
+  );
+
+  // theme
+  const oTheme = document.getElementsByClassName('option-theme');
+  for (let i = 0; i < oTheme.length; ++i) {
+    oTheme[i].addEventListener('change', (evt) => {
+      Config.save('theme', evt.target.value, (result) => {
+        applyTheme(null, result);
+      });
+    });
+  }
+
+  Config.load('theme', (theme) => {
+    oTheme[theme == 'light' ? 0 : 1].checked = true;
+    applyTheme(null, theme);
+  });
+
+  const oWide = document.getElementsByClassName('option-wide');
+  for (let i = 0; i < oWide.length; ++i) {
+    oWide[i].addEventListener('change', (evt) => {
+      Config.save('wide', !!parseInt(evt.target.value), (result) => {
+        applyWide(null, result);
+      });
+    });
+  }
+
+  // wide
+  Config.load('wide', (wide) => {
+    oWide[wide ? 1 : 0].checked = true;
+    applyWide(null, wide);
+  });
+
+  // status:pid
+  const oStatusPid = document.getElementsByClassName('option-status-pid');
+  for (let i = 0; i < oStatusPid.length; ++i) {
+    oStatusPid[i].addEventListener('change', (evt) => {
+      Config.save('show-status-pid', !!parseInt(evt.target.value));
+    });
+  }
+
+  Config.load('show-status-pid', (showPid) => {
+    oStatusPid[showPid ? 0 : 1].checked = true;
+  });
+
+  // status:history
+  const oStatusHistory = document.getElementsByClassName(
+    'option-status-history'
+  );
+  for (let i = 0; i < oStatusHistory.length; ++i) {
+    oStatusHistory[i].addEventListener('change', (evt) => {
+      Config.save(
+        Constants.CONFIG_SHOW_STATUS_HISTORY,
+        !!parseInt(evt.target.value)
+      );
+    });
+  }
+
+  Config.load(Constants.CONFIG_SHOW_STATUS_HISTORY, (showHistory) => {
+    // default is true
+    oStatusHistory[showHistory !== false ? 0 : 1].checked = true;
+  });
+
+  // TODO: remove item from its storage not here, at same domain
+  // document.getElementById('btn-status-history-clear').addEventListener('click', (evt) => {
+  //   evt.preventDefault();
+  //   localStorage.removeItem(Constants.STORAGE_STATUS_HISTORY);
+  //   return false;
+  // });
+
+  // group:link
+  const oGroupLink = document.getElementsByClassName('option-group-link');
+  for (let i = 0; i < oGroupLink.length; ++i) {
+    oGroupLink[i].addEventListener('change', (evt) => {
+      Config.save(
+        Constants.CONFIG_SHOW_GROUP_LINK,
+        !!parseInt(evt.target.value)
+      );
+    });
+  }
+
+  Config.load(Constants.CONFIG_SHOW_GROUP_LINK, (showGroupLink) => {
+    oGroupLink[showGroupLink ? 1 : 0].checked = true;
+  });
+
+  // status:fake-text
+  const oFakeText = document.getElementsByClassName('msg-code');
+  for (let i = 0; i < oFakeText.length; ++i) {
+    Config.load(oFakeText[i].getAttribute('name') + '-code', (format) => {
+      if (format) {
+        oFakeText[i].value = format;
+        document.getElementById(
+          oFakeText[i].getAttribute('data-preview')
+        ).innerHTML = reformat(format);
+      }
+    });
+
+    oFakeText[i].addEventListener('input', onReformatChanged);
+  }
+  // active button
+  const oFakeTextActive = document.getElementsByClassName(
+    'option-status-result'
+  );
+  for (let i = 0; i < oFakeTextActive.length; ++i) {
+    oFakeTextActive[i].addEventListener('change', (evt) => {
+      Config.save(
+        Constants.CONFIG_SHOW_FAKE_RESULT,
+        !!parseInt(evt.target.value)
+      );
+    });
+  }
+
+  Config.load(Constants.CONFIG_SHOW_FAKE_RESULT, (showFakeResult) => {
+    console.log('CONFIG_SHOW_FAKE_RESULT', showFakeResult);
+    oFakeTextActive[showFakeResult !== false ? 0 : 1].checked = true;
+  });
+
+  // help:reformat
+  {
+    const inputReformat = document.getElementById('reformat-practice');
+    onReformatChanged({ target: inputReformat });
+    const table = document.getElementById('reformat-tag-table');
+    const tbody = table.querySelector('tbody');
+    const tags = [
+      'ac',
+      'green',
+      'acc',
+      'accept',
+      'wa',
+      'red',
+      'wrong',
+      'fail',
+      'pac',
+      'yellow',
+      'partial',
+      'ce',
+      'blue',
+      'rte',
+      're',
+      'purple',
+      'runtime',
+      'ple',
+      'tle',
+      'ole',
+      'time',
+      'wait',
+      'gray',
+      'grey',
+      'compile',
+      'judging',
+      'del',
+      // default tags
+      'b',
+      'strong',
+      'i',
+      'u',
+      'strike',
+    ];
+    for (const tag of tags) {
+      const row = document.createElement('tr');
+      const text = '적용된 결과 미리보기';
+      const val = reformat(`<${tag}>${text}</${tag}>`);
+      row.innerHTML = `<td><code>&lt;${tag}&gt;</td><td class="result-fake-text">${val}</td>`;
+      tbody.appendChild(row);
+    }
+  }
+
+  function reformat(text) {
+    const rs = RegExp(/<([a-z]+)>/);
+    const re = RegExp(/<\/[a-z]+>/g);
+    while (rs.test(text)) text = text.replace(rs, '<span class="result-$1">');
+    text = text.replace(re, '</span>');
+    return text;
+  }
+
+  function onReformatChanged(evt) {
+    const key = evt.target.getAttribute('name');
+    const value = evt.target.value;
+    const formatPreview = reformat(
+      value || evt.target.getAttribute('placeholder')
+    );
+    const previewId = evt.target.getAttribute('data-preview');
+    document.getElementById(previewId).innerHTML = formatPreview;
+    Config.save(key, reformat(value));
+    Config.save(key + '-code', value);
+  }
+})();

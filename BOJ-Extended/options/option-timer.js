@@ -1,1 +1,53 @@
-(function(){function a(a,b,c){const d=document.createElement("div"),e=document.createElement("label");e.innerHTML="<a href=\"https://www.acmicpc.net/problem/"+a+"\">"+a+"\uBC88 "+b+"</a>",d.appendChild(e);const f=progressTimer();return d.appendChild(f.element()),f.start(c.startTime,c.endTime,function(){}),d}Array.from(document.getElementsByClassName("btn-close-window")).forEach(function(a){a.addEventListener("click",function(a){a.preventDefault(),window.close("","_parent","")})});const b=document.getElementById("problem-timer-list");Config.load("problem-timers",function(c){const d=Object.keys(c||{});if(d.length)for(let e=0;e<d.length;++e){const f=d[e],g=c[f],h=PROVISIONED_DB.problems[f];b.appendChild(a(f,h,g))}else{const a=document.createElement("p");a.innerText="\uD45C\uC2DC\uD560 \uD56D\uBAA9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.",b.appendChild(a)}})})();
+(function () {
+  Array.from(document.getElementsByClassName('btn-close-window')).forEach(
+    (e) => {
+      e.addEventListener('click', (evt) => {
+        evt.preventDefault();
+        window.close('', '_parent', '');
+      });
+    }
+  );
+
+  const container = document.getElementById('problem-timer-list');
+
+  // Timers
+  Config.load('problem-timers', (list) => {
+    const pids = Object.keys(list || {});
+    if (pids.length) {
+      for (let i = 0; i < pids.length; ++i) {
+        const pid = pids[i];
+        const timeInfo = list[pid];
+        const pname = PROVISIONED_DB['problems'][pid];
+        container.appendChild(createTimerElement(pid, pname, timeInfo));
+      }
+    } else {
+      // empty
+      const p = document.createElement('p');
+      p.innerText = '표시할 항목이 없습니다.';
+      container.appendChild(p);
+    }
+  });
+
+  function createTimerElement(pid, pname, timeInfo) {
+    const div = document.createElement('div');
+    const label = document.createElement('label');
+    label.innerHTML =
+      '<a href="https://www.acmicpc.net/problem/' +
+      pid +
+      '">' +
+      pid +
+      '번 ' +
+      pname +
+      '</a>';
+    div.appendChild(label);
+
+    const progress = progressTimer();
+    div.appendChild(progress.element());
+
+    progress.start(timeInfo['startTime'], timeInfo['endTime'], () => {
+      console.log('finished!!');
+    });
+
+    return div;
+  }
+})();

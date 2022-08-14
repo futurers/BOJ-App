@@ -1,1 +1,118 @@
-function extendUserPage(){function a(a,b,c){a.forEach(function(a){c?a.setAttribute(b,!0):a.removeAttribute(b)})}Utils.loadCSS("css/user.css");const b=document.querySelectorAll(".panel-body"),c=document.createElement("div"),d=document.createElement("input");d.setAttribute("type","checkbox"),d.setAttribute("id","show-pid"),d.addEventListener("change",function(c){Config.save("show-pid",c.target.checked),a(b,"show-id",c.target.checked)});const e=document.createElement("input");e.setAttribute("type","checkbox"),d.setAttribute("id","show-pname"),e.addEventListener("change",function(c){Config.save("show-pname",c.target.checked),a(b,"show-name",c.target.checked)});const f=document.createElement("label");f.setAttribute("for","show-pid"),f.innerText="\uBB38\uC81C \uBC88\uD638";const g=document.createElement("label");g.setAttribute("for","show-pname"),g.innerText="\uBB38\uC81C \uC81C\uBAA9",c.setAttribute("class","problem-toggles"),c.appendChild(d),c.appendChild(f),c.appendChild(e),c.appendChild(g);const h=document.querySelector(".col-md-9");h.insertBefore(c,h.firstChild),Config.getProblems(function(c){b.forEach(function(a){const b=document.createElement("div"),d=a.querySelectorAll("a[href]"),e=document.createElement("div");d.forEach(function(f,g){const h=f.innerText,i=c[h]||"*New Problem",j=f.cloneNode();j.innerHTML="<span class=\"pid\">"+h+"</span> <span class=\"pname\">"+i+"</span>",b.appendChild(j);const k=g+1===d.length,l=100;if(g==l||k){const c=k?g<l?0:1:0;if(b.setAttribute("class","pgroup pg-"+c),e.appendChild(b.cloneNode(!0)),b.innerHTML="",k&&(setTimeout(function(){a.innerHTML=e.innerHTML},10),g>=l)){const b=document.createElement("div");b.setAttribute("class","panel-footer");const c=document.createElement("a");c.setAttribute("class","btn-display-all"),c.innerText="\uBAA8\uB450 \uBCF4\uAE30",c.addEventListener("click",function(b){b.preventDefault(),a.querySelectorAll(".pgroup").forEach(function(a){a.style.display="inline"}),b.target.remove()}),b.appendChild(c),a.parentElement.appendChild(b)}}})}),Config.load("show-pid",function(c){c=!(null!==c&&c!==void 0)||c,d.checked=c,a(b,"show-id",c)}),Config.load("show-pname",function(c){e.checked=c,a(b,"show-name",c)})})}
+function extendUserPage() {
+  Utils.loadCSS('css/user.css');
+
+  function display(containers, key, visible) {
+    containers.forEach((panel) => {
+      if (visible) {
+        panel.setAttribute(key, true);
+      } else {
+        panel.removeAttribute(key);
+      }
+    });
+  }
+
+  function getCurrentUsername() {
+    const { pathname } = window.location;
+    return pathname.replace('/user/', '') || '';
+  }
+
+  const panels = document.querySelectorAll('.panel-body');
+
+  const checkboxes = document.createElement('div');
+  const checkbox1 = document.createElement('input');
+  checkbox1.setAttribute('type', 'checkbox');
+  checkbox1.setAttribute('id', 'show-pid');
+  checkbox1.addEventListener('change', (evt) => {
+    Config.save('show-pid', evt.target.checked);
+    display(panels, 'show-id', evt.target.checked);
+  });
+  const checkbox2 = document.createElement('input');
+  checkbox2.setAttribute('type', 'checkbox');
+  checkbox1.setAttribute('id', 'show-pname');
+  checkbox2.addEventListener('change', (evt) => {
+    Config.save('show-pname', evt.target.checked);
+    display(panels, 'show-name', evt.target.checked);
+  });
+
+  const label1 = document.createElement('label');
+  label1.setAttribute('for', 'show-pid');
+  label1.innerText = '문제 번호';
+  const label2 = document.createElement('label');
+  label2.setAttribute('for', 'show-pname');
+  label2.innerText = '문제 제목';
+
+  checkboxes.setAttribute('class', 'problem-toggles');
+  checkboxes.appendChild(checkbox1);
+  checkboxes.appendChild(label1);
+  checkboxes.appendChild(checkbox2);
+  checkboxes.appendChild(label2);
+
+  const wrapper = document.querySelector('.col-md-9');
+  // add checkboxes whether problem's id or name
+  wrapper.insertBefore(checkboxes, wrapper.firstChild);
+
+  Config.getProblems((problems) => {
+    panels.forEach((panelOrigin) => {
+      const div = document.createElement('div');
+      const labels = panelOrigin.querySelectorAll('a[href]');
+      const panelResult = document.createElement('div');
+      labels.forEach((e, i) => {
+        const pid = e.innerText;
+        const pname = problems[pid] || '*New Problem';
+        const newA = e.cloneNode();
+        newA.innerHTML =
+          '<span class="pid">' +
+          pid +
+          '</span> <span class="pname">' +
+          pname +
+          '</span>';
+        div.appendChild(newA);
+        // split by group
+        const isLastItem = i + 1 === labels.length;
+        const countPerGroup = 100;
+        if (i == countPerGroup || isLastItem) {
+          const gid = isLastItem ? (i < countPerGroup ? 0 : 1) : 0;
+          div.setAttribute('class', 'pgroup pg-' + gid);
+          panelResult.appendChild(div.cloneNode(true));
+          div.innerHTML = '';
+          // end of items
+          if (isLastItem) {
+            setTimeout(() => {
+              panelOrigin.innerHTML = panelResult.innerHTML;
+            }, 10);
+
+            // has more items
+            if (i >= countPerGroup) {
+              // add button to display all
+              const panelFooter = document.createElement('div');
+              panelFooter.setAttribute('class', 'panel-footer');
+              const showButton = document.createElement('a');
+              showButton.setAttribute('class', 'btn-display-all');
+              showButton.innerText = '모두 보기';
+              showButton.addEventListener('click', (evt) => {
+                evt.preventDefault();
+                panelOrigin.querySelectorAll('.pgroup').forEach((e) => {
+                  e.style.display = 'inline';
+                });
+                evt.target.remove();
+              });
+              panelFooter.appendChild(showButton);
+              panelOrigin.parentElement.appendChild(panelFooter);
+            }
+          }
+        }
+      });
+    });
+
+    // sync with configs
+    Config.load('show-pid', (checked) => {
+      checked = checked === null || checked === undefined ? true : checked;
+      checkbox1.checked = checked;
+      display(panels, 'show-id', checked);
+    });
+    Config.load('show-pname', (checked) => {
+      checkbox2.checked = checked;
+      display(panels, 'show-name', checked);
+    });
+  });
+}

@@ -22,7 +22,7 @@ function createWindow () {
   const extensions = new ElectronChromeExtensions()
   extensions.addTab(win.webContents, win)
   win.setMenu(null);
-  win.webContents.session.loadExtension(`${__dirname}/ext/boj-extended`)
+  win.webContents.session.loadExtension(`${__dirname}/boj-extended`)
   win.webContents.openDevTools()
   win.loadURL('https://www.acmicpc.net/')
   

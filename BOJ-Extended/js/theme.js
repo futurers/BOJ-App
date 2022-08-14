@@ -1,1 +1,35 @@
-(function(){window.addEventListener("DOMContentLoaded",function(){Config.load("theme",function(a){applyTheme(null,a)})})})();function extendTheme(){const a=document.createElement("li"),b=document.createElement("a");b.innerText="\uD14C\uB9C8 \uBD88\uB7EC\uC624\uB294 \uC911...",a.appendChild(b),b.addEventListener("click",function(a){a.preventDefault();const c=document.body.parentNode.getAttribute("theme"),d="dark"==c?"light":"dark";Config.save("theme",d,function(a){applyTheme(b,a)})}),addElementToBar(a),Config.load("theme",function(a){applyTheme(b,a)})}function applyTheme(a,b){document.body.parentNode.setAttribute("theme",b),a&&(a.innerText="dark"==b?"\uBC1D\uC740 \uD14C\uB9C8":"\uC5B4\uB450\uC6B4 \uD14C\uB9C8")}
+(function extendThemePre() {
+  window.addEventListener('DOMContentLoaded', () => {
+    Config.load('theme', (theme) => {
+      applyTheme(null, theme);
+    });
+  });
+})();
+
+function extendTheme() {
+  const li = document.createElement('li');
+  const btn = document.createElement('a');
+  btn.innerText = '테마 불러오는 중...';
+  li.appendChild(btn);
+  btn.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    const theme = document.body.parentNode.getAttribute('theme');
+    const newTheme = theme == 'dark' ? 'light' : 'dark';
+    Config.save('theme', newTheme, (result) => {
+      applyTheme(btn, result);
+    });
+  });
+  addElementToBar(li);
+
+  // after page loaded
+  Config.load('theme', (result) => {
+    applyTheme(btn, result);
+  });
+}
+
+function applyTheme(button, theme) {
+  document.body.parentNode.setAttribute('theme', theme);
+  if (button) {
+    button.innerText = theme == 'dark' ? '밝은 테마' : '어두운 테마';
+  }
+}

@@ -1,1 +1,182 @@
-function extendProblemPage(){function a(){window.alert("\uC885\uB8CC\uB418\uC5C8\uC2B5\uB2C8\uB2E4."),g.stop()}const b=document.getElementsByClassName("problem-menu")[0];if(!b)return;const c=b.querySelector("a[href^=\"/problem\"]"),d=getProblemID(c.href),e="problem-timers",f=document.getElementsByClassName("content")[0].getElementsByClassName("row")[0],g=progressTimer();f.insertBefore(g.element(),f.firstChild);const h=function(){const b=Utils.createElement("li",{id:"problem-timer",class:"dropdown"}),c=Utils.createElement("a",{class:"dropdown-toggle",style:"cursor: pointer"});c.innerHTML="\uD0C0\uC774\uBA38<b class=\"caret\"></b>",c.addEventListener("click",function(){b.classList.toggle("open")}),b.appendChild(c);const f=Utils.createElement("form",{class:"dropdown-menu"});f.addEventListener("submit",function(a){a.preventDefault();const b=a.target.getElementsByClassName("btn")[0];if(b.classList.contains("btn-primary")){const c=a.target.elements,f=parseInt(c.h.value)||0,h=parseInt(c.m.value)||0,i=parseInt(c.s.value)||0,j=3600*f+60*h+i;if(60>j)window.alert("\uCD5C\uC18C 1\uBD84 \uC774\uC0C1\uC744 \uC124\uC815\uD574\uC8FC\uC138\uC694.");else{b.innerText="\uC885\uB8CC",b.classList.remove("btn-primary"),b.classList.add("btn-danger");const a=new Date().getTime(),c=a+1e3*j;Config.load(e,function(b){b=b||{},b[d]={startTime:a,endTime:c},Config.save(e,b,function(){g.show(),g.start(a,c)})})}}else b.innerText="\uC2DC\uC791",b.classList.add("btn-primary"),b.classList.remove("btn-danger"),Config.load(e,function(a){a&&(delete a[d],Config.save(e,a,function(){g.hide(),g.stop()}))});return!1}),f.innerHTML="<div style=\"margin-top: 5px;\"><label style=\"width: 30%;\">\uC2DC\uAC04</label><label style=\"width: 33%;\">\uBD84</label><label style=\"width: 33%;\">\uCD08</label></div>",b.appendChild(f);const h=Utils.createElement("span",{class:"timer-seperator"});h.innerText=":";const i=Utils.createElement("input",{type:"number",class:"timer-number",value:"0",name:"h"});f.appendChild(i);const j=i.cloneNode(!0);j.setAttribute("name","m"),f.appendChild(h.cloneNode(!0)),f.appendChild(j);const k=i.cloneNode(!0);k.setAttribute("name","s"),f.appendChild(h.cloneNode(!0)),f.appendChild(k),i.addEventListener("change",function(a){0>a.target.value&&(a.target.value=0,j.value=0,k.value=0)}),j.addEventListener("change",function(a){0>a.target.value?(0<i.value?(i.value=parseInt(i.value)-1,a.target.value=59):a.target.value=0,k.value=0):60<=a.target.value&&(i.value=parseInt(i.value)+1,a.target.value=0)}),k.addEventListener("change",function(a){0>a.target.value?0<j.value?(j.value=parseInt(j.value)-1,a.target.value=59):0<i.value?(i.value=parseInt(i.value)-1,j.value=59,a.target.value=59):a.target.value=0:60<=a.target.value&&(j.value=parseInt(j.value)+1,60<=j.value&&(j.value=0,i.value=parseInt(i.value)+1),a.target.value=0)});const l=Utils.createElement("li",{class:"divider"});f.appendChild(l);const m=document.createElement("button");return Config.load(e,function(b){const c=b?b[d]:void 0;c?(m.setAttribute("class","btn btn-danger btn-block"),m.innerText="\uC885\uB8CC",g.show(),g.start(c.startTime,c.endTime,a)):(m.setAttribute("class","btn btn-primary btn-block"),m.innerText="\uC2DC\uC791",g.hide(),g.stop())}),f.appendChild(m),b}();b.appendChild(h)}
+function extendProblemPage() {
+  const menu = document.getElementsByClassName('problem-menu')[0];
+  if (!menu) return;
+  const problemMenuElement = menu.querySelector('a[href^="/problem"]');
+  const pid = getProblemID(problemMenuElement.href);
+
+  // Constants
+  const STORAGE_TIMER = 'problem-timers';
+
+  const container = document
+    .getElementsByClassName('content')[0]
+    .getElementsByClassName('row')[0];
+  const progress = progressTimer(); // eslint-disable-line no-undef
+  container.insertBefore(progress.element(), container.firstChild);
+
+  const dropdown = createTimerDropdown();
+  menu.appendChild(dropdown);
+
+  function stopTimer() {
+    // TODO: 옵션에서 메시지 설정
+    window.alert('종료되었습니다.');
+    // TODO: 기록 남기기
+    progress.stop();
+    // progress.hide();
+  }
+
+  function createTimerDropdown() {
+    const li = Utils.createElement('li', {
+      id: 'problem-timer',
+      class: 'dropdown',
+    });
+
+    const a = Utils.createElement('a', {
+      class: 'dropdown-toggle',
+      style: 'cursor: pointer',
+    });
+    a.innerHTML = '타이머<b class="caret"></b>';
+    a.addEventListener('click', (evt) => {
+      li.classList.toggle('open');
+    });
+    li.appendChild(a);
+
+    const form = Utils.createElement('form', { class: 'dropdown-menu' });
+    form.addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      const button = evt.target.getElementsByClassName('btn')[0];
+      // can be started
+      if (button.classList.contains('btn-primary')) {
+        const inputs = evt.target.elements;
+        const h = parseInt(inputs.h.value) || 0;
+        const m = parseInt(inputs.m.value) || 0;
+        const s = parseInt(inputs.s.value) || 0;
+        const t = h * 3600 + m * 60 + s;
+        if (t < 60) {
+          window.alert('최소 1분 이상을 설정해주세요.');
+        } else {
+          // timer start
+          button.innerText = '종료';
+          button.classList.remove('btn-primary');
+          button.classList.add('btn-danger');
+          // save in storage
+          const startTime = new Date().getTime();
+          const endTime = startTime + t * 1000;
+          Config.load(STORAGE_TIMER, (list) => {
+            list = list || {};
+            list[pid] = { startTime: startTime, endTime: endTime };
+            Config.save(STORAGE_TIMER, list, (result) => {
+              progress.show();
+              progress.start(startTime, endTime);
+              console.log('list updated', result);
+            });
+          });
+        }
+      } else {
+        // timer stop
+        button.innerText = '시작';
+        button.classList.add('btn-primary');
+        button.classList.remove('btn-danger');
+        // sync setting
+        Config.load(STORAGE_TIMER, (list) => {
+          if (!list) return;
+          delete list[pid];
+          Config.save(STORAGE_TIMER, list, (result) => {
+            progress.hide();
+            progress.stop();
+          });
+        });
+      }
+      return false;
+    });
+    form.innerHTML =
+      '<div style="margin-top: 5px;"><label style="width: 30%;">시간</label><label style="width: 33%;">분</label><label style="width: 33%;">초</label></div>';
+    li.appendChild(form);
+
+    const seperator = Utils.createElement('span', { class: 'timer-seperator' });
+    seperator.innerText = ':';
+
+    const inputH = Utils.createElement('input', {
+      type: 'number',
+      class: 'timer-number',
+      value: '0',
+      name: 'h',
+    });
+    form.appendChild(inputH);
+
+    const inputM = inputH.cloneNode(true);
+    inputM.setAttribute('name', 'm');
+    form.appendChild(seperator.cloneNode(true));
+    form.appendChild(inputM);
+
+    const inputS = inputH.cloneNode(true);
+    inputS.setAttribute('name', 's');
+    form.appendChild(seperator.cloneNode(true));
+    form.appendChild(inputS);
+
+    inputH.addEventListener('change', (evt) => {
+      if (evt.target.value < 0) {
+        evt.target.value = 0;
+        inputM.value = 0;
+        inputS.value = 0;
+      }
+    });
+    inputM.addEventListener('change', (evt) => {
+      if (evt.target.value < 0) {
+        if (inputH.value > 0) {
+          inputH.value = parseInt(inputH.value) - 1;
+          evt.target.value = 59;
+        } else {
+          evt.target.value = 0;
+        }
+        inputS.value = 0;
+      } else if (evt.target.value >= 60) {
+        inputH.value = parseInt(inputH.value) + 1;
+        evt.target.value = 0;
+      }
+    });
+    inputS.addEventListener('change', (evt) => {
+      if (evt.target.value < 0) {
+        if (inputM.value > 0) {
+          inputM.value = parseInt(inputM.value) - 1;
+          evt.target.value = 59;
+        } else if (inputH.value > 0) {
+          inputH.value = parseInt(inputH.value) - 1;
+          inputM.value = 59;
+          evt.target.value = 59;
+        } else {
+          evt.target.value = 0;
+        }
+      } else if (evt.target.value >= 60) {
+        inputM.value = parseInt(inputM.value) + 1;
+        if (inputM.value >= 60) {
+          inputM.value = 0;
+          inputH.value = parseInt(inputH.value) + 1;
+        }
+        evt.target.value = 0;
+      }
+    });
+
+    const divider = Utils.createElement('li', { class: 'divider' });
+    form.appendChild(divider);
+
+    const button = document.createElement('button');
+    Config.load(STORAGE_TIMER, (list) => {
+      console.log(list);
+      const info = list ? list[pid] : undefined;
+      if (info) {
+        button.setAttribute('class', 'btn btn-danger btn-block');
+        button.innerText = '종료';
+        progress.show();
+        progress.start(info['startTime'], info['endTime'], stopTimer);
+      } else {
+        button.setAttribute('class', 'btn btn-primary btn-block');
+        button.innerText = '시작';
+        progress.hide();
+        progress.stop();
+      }
+    });
+    form.appendChild(button);
+
+    return li;
+  }
+}
