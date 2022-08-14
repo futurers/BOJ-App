@@ -30,7 +30,7 @@ jobs:
       - name: electron build
         run: |
           if [ "$RUNNER_OS" == "Windows" ]; then
-              electron build --x64 portable
+              npm run dist:port
               npm run dist
           else
             npm run dist

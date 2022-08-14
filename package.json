@@ -11,7 +11,8 @@
     "build:linux": "electron-builder build --linux -p never --universal",
     "build": "electron-builder build -p never --universal",
     "start": "electron .",
-    "dist": "electron-builder --x64"
+    "dist": "electron-builder --x64",
+    "dist:port": "electron-builder --x64 portable"
   },
   "author": "smartwe",
   "license": "MIT",
