@@ -23,7 +23,6 @@ function createWindow () {
   extensions.addTab(win.webContents, win)
   win.setMenu(null);
   win.webContents.session.loadExtension(`${__dirname}/boj-extended`)
-  win.webContents.openDevTools()
   win.loadURL('https://www.acmicpc.net/')
   
 }
