@@ -295,7 +295,7 @@ window.onload = function()
     if(document.URL.startsWith("https://www.acmicpc.net/submit/"))
     {
         document.getElementsByClassName("col-md-offset-2 col-md-10")[0].innerHTML += '                                                                                    <input type="text" class="btn" id="check_field"><button id="check_button" type="button" class="btn btn-primary" data-loading-text="확인 중...">확인</button>';
-        if(document.getElementsByClassName("chosen-single")[0].innerText == "C++17")
+        if(document.getElementsByClassName("chosen-single")[0].innerText.includes("C++") && document.getElementsByClassName("chosen-single")[0].innerText != "Objective-C++")
         {
             var target = document.getElementById("check_button");
             target.addEventListener("click", function() {
@@ -309,4 +309,5 @@ window.onload = function()
             })
         } 
     }
+
 }
