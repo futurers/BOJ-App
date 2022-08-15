@@ -1,7 +1,6 @@
 const {app, ipcMain, dialog, Notification, Tray, session, Menu, webContents} = require('electron')
 const path = require('path')
-const {BrowserWindow} = require('electron')
-const { ElectronChromeExtensions } = require('electron-chrome-extensions')
+const {BrowserWindow} = require('electron');
 
 
 
@@ -17,14 +16,17 @@ function createWindow () {
       enableRemoteModule: false,
       sandbox: false,
       preload: path.join(__dirname, 'js/preload.js'),
+      icon: path.join(__dirname, 'icon/icon.ico')
     }
   })
-  const extensions = new ElectronChromeExtensions()
-  extensions.addTab(win.webContents, win)
   win.setMenu(null);
-  win.webContents.session.loadExtension(`${__dirname}/boj-extended`)
+  try {
+    win.webContents.session.loadExtension(`${__dirname}/boj-extended`)
+  } catch (error) {
+    win.webContents.session.loadExtension(`${__dirname}/BOJ-Extended`)
+  }
   win.loadURL('https://www.acmicpc.net/')
-  
+  win.webContents.toggleDevTools()
 }
 
 app.on('ready', createWindow);
