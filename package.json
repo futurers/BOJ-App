@@ -14,17 +14,25 @@
     "dist": "electron-builder --x64",
     "dist:port": "electron-builder --win portable --x64 "
   },
+  "build": {
+    "appId": "kr.smartwe.bojadvanced",
+    "files": [
+      "node_modules/**/*",
+      "*.js",
+      "*.json",
+      "license",
+      "*.md",
+      "boj-extended/**/*"
+    ]
+  },
   "author": "smartwe",
   "license": "MIT",
   "devDependencies": {
     "electron": "^20.0.2",
-    "electron-builder": "^22.14.13"
+    "electron-builder": "^23.3.3"
   },
   "dependencies": {
-    "electron-chrome-extensions": "^3.9.0",
-    "electron-updater": "^4.6.5",
-    "got": "^12.3.1",
-    "spectron": "^15.0.0"
+    "electron-chrome-extensions": "^3.9.0"
   },
   "repository": {
     "type": "git",
