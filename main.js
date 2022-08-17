@@ -21,11 +21,10 @@ function createWindow () {
     icon: path.join(__dirname, 'icon/icon.png')
   })
   win.setMenu(null);
-  installExtension('YOUR_ID_HERE')
   try {
-    win.webContents.session.loadExtension(`${__dirname}/boj-extended`)
+    win.webContents.session.loadExtension(`${__dirname}/boj-extended`);
   } catch (error) {
-    win.webContents.session.loadExtension(`${__dirname}/BOJ-Extended`)
+    win.webContents.session.loadExtension(`${__dirname}\boj-extended`);
   }
   win.loadURL('https://www.acmicpc.net/')
   win.webContents.toggleDevTools()

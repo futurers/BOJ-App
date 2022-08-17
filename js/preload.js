@@ -247,8 +247,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 window.onload = () => 
 {
     document.head.innerHTML += `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify@0.5.5/dist/simple-notify.min.css" /> \
-    <script src="https://cdn.jsdelivr.net/npm/simple-notify@0.5.5/dist/simple-notify.min.js"></script> \
-    <script src="https://raw.githubusercontent.com/smartwe/tio-api/master/tio.js" />;`
+    <script src="https://cdn.jsdelivr.net/npm/simple-notify@0.5.5/dist/simple-notify.min.js"></script>;`
     function getElementByXpath(path) 
     {
         return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
