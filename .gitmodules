@@ -1,0 +1,3 @@
+[submodule "boj-extended"]
+	path = boj-extended
+	url = https://github.com/joonas-yoon/boj-extended.git
