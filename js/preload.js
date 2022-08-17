@@ -2,11 +2,12 @@ const Notify = require('simple-notify');
 const pako = require('pako');
 const beautify = require('beautify');
 const fs = require('fs');
+const { chrome } = require('process');
 
 var fieldSeparator = "\xff";
 var startOfExtraFields = "\xfe";
 
-var data =fs.readFileSync('./lang.json', 'utf8');
+var data =fs.readFileSync(__dirname + '/lang.json', 'utf8');
 const lang_json = JSON.parse(data);
  	
 
@@ -221,6 +222,13 @@ window.addEventListener('DOMContentLoaded', (event) => {
             }
         }
     }
+
+    if(document.URL.includes("/setting") || document.URL.includes("/modify") || document.URL.includes("/password"))
+    {
+        document.getElementsByClassName("list-group-item")[0].addEventListener("click", () => {
+            chrome.extension.getURL("options/option.html");
+        });
+    }
     const element4 = document.head;
     element4.innerHTML += '<script> \
     function adblock() \
@@ -251,10 +259,6 @@ window.onload = () =>
     function getElementByXpath(path) 
     {
         return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-    }
-    if(getElementByXpath("/html/body/div[2]/div[2]/div/div[1]/ul[2]/li[1]") != undefined)
-    {
-        getElementByXpath("/html/body/div[2]/div[2]/div/div[1]/ul[2]/li[1]").remove();
     }
     if(document.URL.startsWith("https://www.acmicpc.net/"))
     {
