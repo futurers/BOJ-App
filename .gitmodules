@@ -1,4 +1,4 @@
 [submodule "boj-extended"]
-	path = boj-extended
+	path = BOJ-Extended
 	url = https://github.com/joonas-yoon/boj-extended
 	branch = release
