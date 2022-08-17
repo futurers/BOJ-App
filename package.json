@@ -15,20 +15,15 @@
     "dist:port": "electron-builder --win portable --x64 "
   },
   "build": {
-    "appId": "kr.smartwe.bojadvanced",
+    "appId": "github.futurers.bojadvanced",
+    "productName": "BOJ Advanced",
     "files": [
-      "node_modules/**/*",
-      "js/**/*",
-      "*.json",
-      "license",
-      "*.md",
-      "boj-extended/**/*",
-      "BOJ-Extended/**/*",
-      "*.js"
+      "**/*",
+      "!.github"
     ]
-  },
-  "author": "smartwe",
-  "license": "MIT",
+  },  
+  "author": "futurers",
+  "license": "GNU General Public License v3.0",
   "devDependencies": {
     "electron": "^20.0.2",
     "electron-builder": "^23.3.3"
@@ -38,6 +33,8 @@
     "url": "https://github.com/smartwe/BOJ-App.git"
   },
   "dependencies": {
-    "pako": "^2.0.4"
+    "beautify": "^0.0.8",
+    "pako": "^2.0.4",
+    "simple-notify": "^0.5.5"
   }
 }

@@ -1,6 +1,14 @@
+const Notify = require('simple-notify');
 const pako = require('pako');
+const beautify = require('beautify');
+const fs = require('fs');
+
 var fieldSeparator = "\xff";
 var startOfExtraFields = "\xfe";
+
+var data =fs.readFileSync('./lang.json', 'utf8');
+const lang_json = JSON.parse(data);
+ 	
 
 function deflate(arr) {
     return pako.deflateRaw(arr, {
@@ -54,6 +62,9 @@ function byteArrayToByteString(byteArray) {
 function byteStringToBase64(byteString) {
     return window.btoa(byteString).replace(/\+/g, "@").replace(/=+/, "");
 }
+
+var fieldSeparator = "\xff";
+var startOfExtraFields = "\xfe";
 
 var TIO = {
 
@@ -135,50 +146,11 @@ var TIO = {
 
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
 window.addEventListener('DOMContentLoaded', (event) => {
-    function setCookie(cookieName, cookieValue, cookieExpire, cookiePath, cookieDomain, cookieSecure){
-        var cookieText=escape(cookieName)+'='+escape(cookieValue);
-        cookieText+=(cookieExpire ? '; EXPIRES='+cookieExpire.toGMTString() : '');
-        cookieText+=(cookiePath ? '; PATH='+cookiePath : '');
-        cookieText+=(cookieDomain ? '; DOMAIN='+cookieDomain : '');
-        cookieText+=(cookieSecure ? '; SECURE' : '');
-        document.cookie=cookieText;
-    }
-     
-    function getCookie(cookieName){
-        var cookieValue=null;
-        if(document.cookie){
-            var array=document.cookie.split((escape(cookieName)+'='));
-            if(array.length >= 2){
-                var arraySub=array[1].split(';');
-                cookieValue=unescape(arraySub[0]);
-            }
-        }
-        return cookieValue;
-    }
      
     function getElementByXpath(path) 
     {
         return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-    }
-
-    function deleteCookie(cookieName){
-        var temp=getCookie(cookieName);
-        if(temp){
-            setCookie(cookieName,temp,(new Date(1)));
-        }
     }
     
     function get_tier(name)
@@ -193,10 +165,8 @@ window.addEventListener('DOMContentLoaded', (event) => {
         tier = source.items[0].tier
         return "https://static.solved.ac/tier_small/"+tier+".svg"
     }
-
-
-
     
+
     let isLoggedin = false
     if(getElementByXpath("/html/body/div[2]/div[1]/div[1]/div/ul/li[3]/a").getAttribute("href") == "/modify")
     {
@@ -217,7 +187,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
         element3.innerHTML += `
         <img src="${get_tier(getElementByXpath('/html/body/div[2]/div[1]/div[1]/div/ul/li[1]/a').innerText)}" style="height: 15px; width: 15px;"/>`;
     }
-    if(getCookie('adblock-activated') == "true")
+    if(localStorage.getItem('adblock-activated') == "true")
     {
         document.getElementById('adblock-tg').innerText= "광고차단 해제";
         adblock();
@@ -268,14 +238,17 @@ window.addEventListener('DOMContentLoaded', (event) => {
     </script>';
     const element5 = document.getElementById('adblock-tg');
     element5.addEventListener('click', (event) => {
-        console.log('a')
-        setCookie('adblock-activated', (element5.innerText == "광고차단").toString())
+        localStorage.setItem('adblock-activated', (element5.innerText == "광고차단").toString())
         element5.innerText = (element5.innerText == "광고차단")?"광고차단 해제":"광고차단"
         adblock();
     });
 });
-window.onload = function()
+
+window.onload = () => 
 {
+    document.head.innerHTML += `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify@0.5.5/dist/simple-notify.min.css" /> \
+    <script src="https://cdn.jsdelivr.net/npm/simple-notify@0.5.5/dist/simple-notify.min.js"></script> \
+    <script src="https://raw.githubusercontent.com/smartwe/tio-api/master/tio.js" />;`
     function getElementByXpath(path) 
     {
         return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
@@ -295,19 +268,24 @@ window.onload = function()
     if(document.URL.startsWith("https://www.acmicpc.net/submit/"))
     {
         document.getElementsByClassName("col-md-offset-2 col-md-10")[0].innerHTML += '                                                                                    <input type="text" class="btn" id="check_field"><button id="check_button" type="button" class="btn btn-primary" data-loading-text="확인 중...">확인</button>';
-        if(document.getElementsByClassName("chosen-single")[0].innerText.includes("C++") && document.getElementsByClassName("chosen-single")[0].innerText != "Objective-C++")
-        {
-            var target = document.getElementById("check_button");
-            target.addEventListener("click", function() {
-                line = document.getElementsByClassName("CodeMirror-line")
-                var code = "";
+        document.getElementById("check_button").addEventListener("click", (event) => {
+            if(lang_json.hasOwnProperty(document.getElementsByClassName("chosen-single")[0].innerText))
+            {
+                if(lang_json[document.getElementsByClassName("chosen-single")[0].innerText] == "unsupported")
+                {
+                    new Notify({ status: 'error', title: '실행 결과:', text: `<b>지원되지 않는 언어입니다</b>`, effect: 'fade', speed: 300, customClass: null, customIcon: "Boj", showIcon: true, showCloseButton: true, autoclose: true, autotimeout: 8000, gap: 20, distance: 20, type: 1, position: 'right top'})
+                    return;
+                }
+                line = document.getElementsByClassName(" CodeMirror-line ");
+                var code = "";            //*[@id="submit_form"]/div[3]/div/div/div[6]/div[1]/div/div/div/div[5]/div[3]/pre/span
                 for(var i = 0;i < line.length;i++)
                 {
-                    code += line[i].innerText + "\n";
+                    code += line[i].innerText.replace(/[\u200B-\u200D\uFEFF]/g, '') + "\n";
                 }
-                TIO.run(code, document.getElementById("check_field").value, "cpp-gcc").then(n=>alert(n[0] + "\n" + n[1]));
-            })
-        } 
+                TIO.run(beautify(code, {format: 'js'}), document.getElementById("check_field").value, lang_json[document.getElementsByClassName("chosen-single")[0].innerText]).then(n=>new Notify({ status: 'success', title: '실행 결과:', text: `<b><p style='font-size: 14px; color: black;'>stdout: ${n[0]} </p></b>
+                stderr+timing: ${n[1]} `, effect: 'fade', speed: 300, customClass: null, customIcon: "Boj", showIcon: true, showCloseButton: true, autoclose: true, autotimeout: 8000, gap: 20, distance: 20, type: 1, position: 'right top'}));
+            }
+        })
     }
 
 }

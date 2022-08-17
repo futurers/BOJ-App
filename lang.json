@@ -1,5 +1,5 @@
 {
-    "C++17": "cpp-gcc/",
+    "C++17": "cpp-gcc",
     "Java 8": "java-jdk",
     "Python 3": "python3-cython",
     "C11": "c-gcc",
