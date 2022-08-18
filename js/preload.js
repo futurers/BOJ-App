@@ -270,7 +270,8 @@ window.onload = () =>
     }
     if(document.URL.startsWith("https://www.acmicpc.net/submit/"))
     {
-        document.getElementsByClassName("col-md-offset-2 col-md-10")[0].innerHTML += '                                                                                    <input type="text" class="btn" id="check_field"><button id="check_button" type="button" class="btn btn-primary" data-loading-text="확인 중...">확인</button>';
+        document.getElementsByClassName("col-md-offset-2 col-md-10")[0].innerHTML += '                                                                                    <input type="text" class="btn" id="check_field">       <button id="check_button" type="button" class="btn btn-primary" data-loading-text="확인 중...">확인</button>';
+        document.getElementById("check_field").style.border = "1px solid black";
         document.getElementById("check_button").addEventListener("click", (event) => {
             if(lang_json.hasOwnProperty(document.getElementsByClassName("chosen-single")[0].innerText))
             {
