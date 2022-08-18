@@ -37,7 +37,6 @@
   "dependencies": {
     "beautify": "^0.0.8",
     "electron-log": "^4.4.8",
-    "electron-updater": "^5.2.1",
     "pako": "^2.0.4",
     "simple-notify": "^0.5.5"
   }
