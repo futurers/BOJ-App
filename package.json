@@ -1,6 +1,6 @@
 {
   "name": "bojadvanced",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "App what helps PS of BOJ",
   "main": "./main.js",
   "scripts": {
