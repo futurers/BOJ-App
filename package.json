@@ -14,9 +14,44 @@
     "dist:32": "electron-builder --ia32",
     "dist:port": "electron-builder --win portable --x64 "
   },
+
   "build": {
-    "appId": "github.futurers.bojadvanced",
     "productName": "BOJ-Advanced",
+    "appId": "github.futurers.bojadvanced",
+    "asar": true,
+    "mac": { 
+      "target": [
+        "default"
+      ],
+      "icon": "./icon/icon.icns"
+    },
+    "dmg": { 
+      "icon": "./icon/icon.icns"
+    },
+    "win": {  
+      "target": [  
+        "zip",  
+        "nsis" 
+      ],
+      "icon": "./icon/icon.ico"
+    },
+    "linux": { 
+      "target": [
+        "AppImage", 
+        "deb",
+        "rpm",
+        "zip",
+        "tar.gz"
+      ]
+    },
+    "nsis":{
+      "oneClick" : false,
+      "allowToChangeInstallationDirectory" :true 
+    },
+    "directories": {
+      "buildResources": "/",
+      "output": "dist/"
+    },
     "files": [
       "**/*",
       "!.github",
@@ -25,7 +60,8 @@
       "boj-extended/dist/*",
       "*.html",
       "${/*}"
-    ]
+    ],
+    "extraResources" : ["./boj-extended/dist/**/*"]
   },
   "author": "futurers",
   "license": "GNU General Public License v3.0",
