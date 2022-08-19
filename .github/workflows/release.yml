@@ -31,9 +31,9 @@ jobs:
         run: |
           if [ "$RUNNER_OS" == "Windows" ]; then
               npm run dist:port
-              npm run dist
+              npm run dist:64
           else
-            npm run dist
+            npm run dist:64
           fi
         shell: bash
       - name: Release
