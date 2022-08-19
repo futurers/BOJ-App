@@ -3,6 +3,8 @@ const pako = require('pako');
 const beautify = require('beautify');
 const fs = require('fs');
 const { chrome } = require('process');
+const { ipcRenderer } = require('electron');
+const { syncBuiltinESMExports } = require('module');
 
 var fieldSeparator = "\xff";
 var startOfExtraFields = "\xfe";
@@ -10,6 +12,10 @@ var startOfExtraFields = "\xfe";
 var data =fs.readFileSync(__dirname + '/lang.json', 'utf8');
 const lang_json = JSON.parse(data);
  	
+function sleep(ms) {
+    const wakeUpTime = Date.now() + ms;
+    while (Date.now() < wakeUpTime) {}
+}
 
 function deflate(arr) {
     return pako.deflateRaw(arr, {
@@ -148,6 +154,10 @@ var TIO = {
 };
 
 window.addEventListener('DOMContentLoaded', (event) => {
+    if(document.URL.startsWith("file://"))
+    {
+        return 0;;
+    }
      
     function getElementByXpath(path) 
     {
@@ -181,7 +191,16 @@ window.addEventListener('DOMContentLoaded', (event) => {
     element2.innerHTML += '<li class="topbar-devider"></li> \
     <li> \
     <a id="adblock-tg" href="javascript:void(0)">광고차단</a> \
+    </li> \
+    <li class="topbar-devider"></li> \
+    <li> \
+    <a id="boj-extended-tg" href="javascript:void(0)">BOJ EXTENDED ON</a> \
+    </li> \
+    <li class="topbar-devider"></li> \
+    <li> \
+    <a id="localStorage_clear" onclick="localStorage.clear();">로컬 스토리지 비우기</a> \
     </li>';
+    
     if(isLoggedin)
     {
         const element3 = getElementByXpath("/html/body/div[2]/div[1]/div[1]/div/ul/li[1]");
@@ -197,6 +216,45 @@ window.addEventListener('DOMContentLoaded', (event) => {
     {
         document.getElementById('adblock-tg').innerText= "광고차단";
     }
+
+    if(localStorage.getItem('boj-extended-activated') == "true")
+    {
+        document.getElementById('boj-extended-tg').innerText = "BOJ EXTENDED ON";
+        be_fnc();
+        document.getElementById('boj-extended-tg').innerText = "BOJ EXTENDED OFF";
+    }
+    else
+    {
+        document.getElementById('boj-extended-tg').innerText = "BOJ EXTENDED OFF";
+        be_fnc();
+        document.getElementById('boj-extended-tg').innerText= "BOJ EXTENDED ON";
+    }
+
+    function be_fnc()
+    {
+        if(document.getElementById('boj-extended-tg').innerText == "BOJ EXTENDED ON")
+        {
+            console.log('be_off');
+            ipcRenderer.send('be_off');
+        }
+        else
+        {
+            console.log('be_on');
+            ipcRenderer.send('be_on');
+        }
+    } 
+
+    function be_off()
+    {
+        console.log('be_off');
+        ipcRenderer.send('be_off');
+    } 
+    function be_on()
+    {
+        console.log('be_on');
+        ipcRenderer.send('be_on');
+    }
+
 
     function adblock()
     {
@@ -246,26 +304,35 @@ window.addEventListener('DOMContentLoaded', (event) => {
     </script>';
     const element5 = document.getElementById('adblock-tg');
     element5.addEventListener('click', (event) => {
-        localStorage.setItem('adblock-activated', (element5.innerText == "광고차단").toString())
-        element5.innerText = (element5.innerText == "광고차단")?"광고차단 해제":"광고차단"
+        localStorage.setItem('adblock-activated', (element5.innerText == "광고차단").toString());
+        element5.innerText = (element5.innerText == "광고차단")?"광고차단 해제":"광고차단";
         adblock();
     });
+    const element6 = document.getElementById('boj-extended-tg');
+    element6.addEventListener('click', (event) => {
+        localStorage.setItem('boj-extended-activated', (element6.innerText == "BOJ EXTENDED ON").toString());
+        element6.innerText = (element6.innerText == "BOJ EXTENDED ON")?"BOJ EXTENDED OFF":"BOJ EXTENDED ON";
+        be_fnc();
+        location.reload();
+    });
+    
 });
 
 window.onload = () => 
 {
+    if(document.URL.startsWith("file://"))
+    {
+        return 0;;
+    }
     document.head.innerHTML += `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify@0.5.5/dist/simple-notify.min.css" /> \
     <script src="https://cdn.jsdelivr.net/npm/simple-notify@0.5.5/dist/simple-notify.min.js"></script>;`
     function getElementByXpath(path) 
     {
         return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
     }
-    if(document.URL.startsWith("https://www.acmicpc.net/"))
+    if(!document.URL.startsWith("https://www.acmicpc.net/") && !document.URL.includes("BOJ-App/index.html"))
     {
-    }
-    else
-    {
-        window.open(document.URL, "_blank");
+        window.open(document.URL);
         history.back();
     }
     if(document.URL.startsWith("https://www.acmicpc.net/submit/"))

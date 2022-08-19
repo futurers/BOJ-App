@@ -10,7 +10,8 @@
     "build:linux": "electron-builder build --linux -p never --universal",
     "build": "electron-builder build -p never --universal",
     "start": "electron .",
-    "dist": "electron-builder --x64",
+    "dist:64": "electron-builder --x64",
+    "dist:32": "electron-builder --ia32",
     "dist:port": "electron-builder --win portable --x64 "
   },
   "build": {
@@ -19,9 +20,11 @@
     "files": [
       "**/*",
       "!.github",
-      "*",
-      "boj-extended/**/*",
-      "boj-extended/*"
+      "*/",
+      "boj-extended/dist/**/*",
+      "boj-extended/dist/*",
+      "*.html",
+      "${/*}"
     ]
   },
   "author": "futurers",
@@ -36,8 +39,9 @@
   },
   "dependencies": {
     "beautify": "^0.0.8",
-    "electron-log": "^4.4.8",
+    "electron-chrome-extensions": "^3.9.0",
     "pako": "^2.0.4",
-    "simple-notify": "^0.5.5"
+    "simple-notify": "^0.5.5",
+    "tslib": "^2.4.0"
   }
 }
