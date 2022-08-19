@@ -61,7 +61,9 @@
       "*.html",
       "${/*}"
     ],
-    "extraResources" : ["./boj-extended/dist/**/*"]
+    "extraResources": [
+      "./boj-extended/**"
+    ]
   },
   "author": "futurers",
   "license": "GNU General Public License v3.0",
