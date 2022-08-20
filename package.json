@@ -2,6 +2,7 @@
   "name": "bojadvanced",
   "version": "1.0.5",
   "description": "App what helps PS of BOJ",
+  "email": "me@smartwe.kr",
   "main": "./main.js",
   "scripts": {
     "build:all": "electron-builder -mwl --universal",
@@ -12,41 +13,41 @@
     "start": "electron .",
     "dist:64": "electron-builder --x64",
     "dist:32": "electron-builder --ia32",
-    "dist:port": "electron-builder --win portable --x64 "
+    "dist:port": "electron-builder --win portable --x64 ",
+    "lint": "eslint . --fix && prettier . --write"
   },
-
   "build": {
     "productName": "BOJ-Advanced",
     "appId": "github.futurers.bojadvanced",
     "asar": true,
-    "mac": { 
+    "mac": {
       "target": [
         "default"
       ],
       "icon": "./icon/icon.icns"
     },
-    "dmg": { 
+    "dmg": {
       "icon": "./icon/icon.icns"
     },
-    "win": {  
-      "target": [  
-        "zip",  
-        "nsis" 
+    "win": {
+      "target": [
+        "zip",
+        "nsis"
       ],
       "icon": "./icon/icon.ico"
     },
-    "linux": { 
+    "linux": {
       "target": [
-        "AppImage", 
+        "AppImage",
         "deb",
         "rpm",
         "zip",
         "tar.gz"
       ]
     },
-    "nsis":{
-      "oneClick" : false,
-      "allowToChangeInstallationDirectory" :true 
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
     },
     "directories": {
       "buildResources": "/",
@@ -56,20 +57,29 @@
       "**/*",
       "!.github",
       "*/",
-      "boj-extended/dist/**/*",
-      "boj-extended/dist/*",
       "*.html",
       "${/*}"
     ],
     "extraResources": [
-      "./boj-extended/**"
+      {
+        "from": "./boj-extended/dist/",
+        "to": "/boj-extended/dist",
+        "filter": [
+          "**/*"
+        ]
+      }
     ]
   },
   "author": "futurers",
   "license": "GNU General Public License v3.0",
   "devDependencies": {
     "electron": "^20.0.3",
-    "electron-builder": "^23.3.3"
+    "electron-builder": "^23.3.3",
+    "eslint": "^8.22.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1"
   },
   "repository": {
     "type": "git",
@@ -78,8 +88,20 @@
   "dependencies": {
     "beautify": "^0.0.8",
     "electron-chrome-extensions": "^3.9.0",
+    "eslint-config-google": "^0.14.0",
     "pako": "^2.0.4",
     "simple-notify": "^0.5.5",
     "tslib": "^2.4.0"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
